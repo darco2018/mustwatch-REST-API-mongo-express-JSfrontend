@@ -11,7 +11,8 @@ var movieRouter = require('./routes/movie');
 var app = express();
 
 // view engine setup
-
+app.use(express.static(path.join(__dirname + "/views")));
+app.use(express.static(path.join(__dirname + "/public")));
 
 // db
 const dbName = 'mustwatch';
