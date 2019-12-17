@@ -1,0 +1,84 @@
+{
+	"variables": [],
+	"info": {
+		"name": "movies",
+		"_postman_id": "185d6081-9858-dedc-7667-a51eba6bb079",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "MOVIE http://localhost:3000/api/movies/",
+			"request": {
+				"url": "http://localhost:3000/api/movies/",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{ \n  \"_id\" : \"5df6240bae7a7b36316e55f9\", \n  \"title\" : \"Postman\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "ALL http://localhost:3000/api/movies/",
+			"request": {
+				"url": "http://localhost:3000/api/movies/",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "MOVIE http://localhost:3000/api/movies/5df62278b9af4035127a10ce",
+			"request": {
+				"url": "http://localhost:3000/api/movies/5df6240bae7a7b36316e55f9",
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "ONE http://localhost:3000/api/movies/5df6240bae7a7b36316e55f9",
+			"request": {
+				"url": "http://localhost:3000/api/movies/5df6240bae7a7b36316e55f9",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "MOVIE http://localhost:3000/api/movies/5df6240bae7a7b36316e55f9",
+			"request": {
+				"url": "http://localhost:3000/api/movies/5df6240bae7a7b36316e55f9",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"title\": \"NEW TITLE\" }"
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
