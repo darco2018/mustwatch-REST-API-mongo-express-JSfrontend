@@ -4,7 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
-var dbTest = require("./helpers/dbTest")
+var dbTest = require('./helpers/dbTest');
 
 var indexRouter = require('./routes/index');
 var movieRouter = require('./routes/movie');
@@ -22,11 +22,12 @@ mongoose.connect('mongodb://localhost:27017/' + dbName, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
-mongoose.set("debug", true);
+mongoose.set('debug', true);
 const conn = mongoose.connection;
-conn.on("open", ()=> console.log("------ Connected to db " + dbName))
-.catch(err => console.log(err))
-mongoose.Promise = Promise
+conn
+  .on('open', () => console.log('------- Connected to db ' + dbName))
+  .catch(err => console.log(err));
+mongoose.Promise = Promise;
 
 app.use(logger('dev'));
 app.use(express.json());
