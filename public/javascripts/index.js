@@ -27,6 +27,42 @@ window.addEventListener('DOMContentLoaded', event => {
     }
   });
 
+  movielist.addEventListener('click', function fn(e) {
+    //console.log(e.target.tagName);
+    let listItem = getClosest(e.target, 'li');
+    const movieId = listItem.dataset.id;
+
+    if (e.target.className === 'deleteBtn') {
+      movielist.removeChild(listItem);
+      console.log('--deleting movie from db');
+      //deleteMovie();
+    } else {
+      let pre = null;
+      if (e.target.tagName === 'LI') {       
+        pre = e.target.children[0];
+      } else {
+        pre = getClosest(e.target, 'pre');
+      }
+
+      let isWatched = false;
+      if (pre.classList.contains('isWatched')) {
+        pre.classList.remove('isWatched');
+      } else {
+        pre.classList.add('isWatched');
+        isWatched = true;
+      }
+
+      console.log('upadting movie state in DB: ' + movieId + ', ' + isWatched);
+    }
+  });
+
+  function getClosest(elem, selector) {
+    for (; elem && elem !== document; elem = elem.parentNode) {
+      if (elem.matches(selector)) return elem;
+    }
+    return null;
+  }
+
   async function postMovie(url = '', newMovie = {}) {
     const res = await fetch(url, {
       method: 'POST',
@@ -62,12 +98,13 @@ window.addEventListener('DOMContentLoaded', event => {
     movieList.innerHTML = '';
     for (const movie of movies) {
       const { _id, title, released, genre, rating, isWatched } = movie;
-      console.log(_id);     
+      console.log(_id);
 
       let listItem = document.createElement('li');
       listItem.innerHTML = `<pre><strong>${title}</strong> released in <span>${released}</span>, <span>${genre}</span>, <span>${rating}</span>, <span>${isWatched}</span></pre>`;
-
-      listItem.setAttribute("data-id", _id)
+      listItem.innerHTML += "<span class='deleteBtn'>X</span>";
+      listItem.setAttribute('data-id', _id);
+      listItem.classList.add('movieItem');
       if (isWatched) {
         listItem.classList.add('isWatched');
       }

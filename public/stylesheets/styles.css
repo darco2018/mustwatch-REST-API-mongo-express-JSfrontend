@@ -9,3 +9,22 @@ body {
 .isWatched {
   text-decoration: line-through;
 }
+
+.deleteBtn {
+  border-radius: 50%;
+  background: darkgrey;
+  color: pink;
+  padding: 3px 6px;
+  opacity: 0.7;
+}
+
+.deleteBtn:hover {
+  color: red;
+  cursor: pointer;
+  opacity: 1;
+}
+
+pre {
+    display: inline-block;
+    margin-right: 10px;
+}
