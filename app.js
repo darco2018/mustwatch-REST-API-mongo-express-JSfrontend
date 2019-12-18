@@ -10,10 +10,6 @@ var indexRouter = require('./routes/index');
 var movieRouter = require('./routes/movie');
 var app = express();
 
-// view engine setup
-app.use(express.static(path.join(__dirname + "/views")));
-app.use(express.static(path.join(__dirname + "/public")));
-
 // db
 const dbName = 'mustwatch';
 // uncomment to test mongo
@@ -33,7 +29,9 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// view engine setup
+//app.use(express.static(path.join(__dirname + '/views')));
+//app.use(express.static(path.join(__dirname, '/public')));
 
 app.use('/', indexRouter);
 app.use('/api/movies', movieRouter);
