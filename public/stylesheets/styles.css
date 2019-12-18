@@ -1,3 +1,11 @@
 body {
-    background: lightgrey;
+  background: lightgrey;
+}
+
+#movieInput {
+  min-width: 300px;
+}
+
+.isWatched {
+  text-decoration: line-through;
 }

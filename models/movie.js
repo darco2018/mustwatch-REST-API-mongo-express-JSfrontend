@@ -1,6 +1,7 @@
 var express = require('express');
 var mongoose = require('mongoose');
 
+// _id field by default 
 const movieSchema = new mongoose.Schema({
   title: { type: String, default: 'No title', trim: true, required: true },
   genre: { type: String, default: 'Not specified', trim: true },
