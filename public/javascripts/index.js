@@ -110,6 +110,10 @@ window.addEventListener('DOMContentLoaded', event => {
       headers: {
         'Content-Type': 'application/json'
       },
+
+
+
+
       body: JSON.stringify({ isWatched })
     });
 
@@ -128,10 +132,9 @@ window.addEventListener('DOMContentLoaded', event => {
     for (const movie of movies) {
       const { _id, title, released, genre, rating, isWatched } = movie;
       let listItem = document.createElement('LI');
-      listItem.innerHTML = `<pre class=${isWatched ? "isWatched" : ""}>  <strong>${title}</strong> released in <span>${released}</span>, <span>${genre}</span>, <span>${rating}</span>, </pre>`;
-      
-      listItem.setAttribute('data-id', _id);
       listItem.classList.add('movieItem'); 
+      listItem.setAttribute('data-id', _id);
+      listItem.innerHTML = `<pre class=${isWatched ? "movieItem isWatched" : "movieItem"}>  <strong>${title}</strong> released in <span>${released}</span>, <span>${genre}</span>, <span>${rating}</span>, </pre>`;
       listItem.innerHTML += `<span class="deleteBtn">X</span>`;
 
       movieList.appendChild(listItem);
