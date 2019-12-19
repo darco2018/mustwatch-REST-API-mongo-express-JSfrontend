@@ -12,17 +12,27 @@
 <body>
     <header>
         <h1>Must<span>watch</span></h1>
-        <h2>Movies you want to watch in the future</h2>
     </header>
 
-    <section>
-        <form class="form">
-            <input id="movieInput" type="text" id="movieInput" placeholder="Add new movie you want to watch"></input>
-        </form>
-    </section>
+    <main>
+        <section>
+            <section class="form">
+                <input id="titleInput" type="text" id="titleInput"
+                    placeholder="Add new movie you want to watch"></input>
+            </section>
+        </section>
+        <section id="future">
+            <h2>Movies to watch in the future</h2>
+            <ul id="futureList" class="list">
+            </ul>
+        </section>
+        <section id="history">
+            <h2>Movies I have already watched</h2>
+            <ul id="historyList" class="list">
+            </ul>
+        </section>
+    </main>
 
-    <ul id="movieList" class="list">
-    </ul>
     <script src="/public/javascripts/index.js"></script>
 
 </body>
