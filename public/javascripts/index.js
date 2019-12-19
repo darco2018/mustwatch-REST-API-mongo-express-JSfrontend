@@ -35,7 +35,7 @@ window.addEventListener('DOMContentLoaded', event => {
         const savedMovie = await postMovie(fullUrl, newMovie);
         init();
       } catch (error) {
-        'There has been a problem with your fetch operation: ' + error.message
+        'There has been a problem with your fetch operation: ' + error.message;
       }
     }
   });
@@ -53,14 +53,13 @@ window.addEventListener('DOMContentLoaded', event => {
         updateMovie(movieId, { isWatched });
       }
     } catch (error) {
-      'There has been a problem with your fetch operation: ' + error.message
-    }   
+      'There has been a problem with your fetch operation: ' + error.message;
+    }
   });
-
 
   /* ------------------------- API calls ---------------------- */
 
-  async function getMovies (url = '') {
+  async function getMovies(url = '') {
     const res = await fetch(url, {
       method: 'GET', // default
       mode: 'cors', // default
@@ -74,7 +73,7 @@ window.addEventListener('DOMContentLoaded', event => {
 
     const json = await res.json(); // parses JSON response into native JavaScript objects
     return json.movies;
-  };
+  }
 
   async function postMovie(url = '', newMovie = {}) {
     const res = await fetch(url, {
@@ -111,9 +110,6 @@ window.addEventListener('DOMContentLoaded', event => {
         'Content-Type': 'application/json'
       },
 
-
-
-
       body: JSON.stringify({ isWatched })
     });
 
@@ -132,9 +128,15 @@ window.addEventListener('DOMContentLoaded', event => {
     for (const movie of movies) {
       const { _id, title, released, genre, rating, isWatched } = movie;
       let listItem = document.createElement('LI');
-      listItem.classList.add('movieItem'); 
-      listItem.setAttribute('data-id', _id);
-      listItem.innerHTML = `<pre class=${isWatched ? "movieItem isWatched" : "movieItem"}>  <strong>${title}</strong> released in <span>${released}</span>, <span>${genre}</span>, <span>${rating}</span>, </pre>`;
+/*       listItem.classList.add('movieItem');
+ */      listItem.setAttribute('data-id', _id);
+      listItem.innerHTML =
+        `<p class="${isWatched ? 'movieItem isWatched' : 'movieItem'}">` +
+        `<strong>${title}</strong> 
+        released in <span>${released}</span>, 
+        <span>${genre}</span>
+        </p>`;
+
       listItem.innerHTML += `<span class="deleteBtn">X</span>`;
 
       movieList.appendChild(listItem);
@@ -142,16 +144,16 @@ window.addEventListener('DOMContentLoaded', event => {
   }
 
   function toggleIsWatched(e) {
-    let pre =
+    let p =
       e.target.tagName === 'LI'
         ? e.target.children[0]
-        : getClosest(e.target, 'PRE');
+        : getClosest(e.target, 'P');
 
     let isWatched = false;
-    if (pre.classList.contains('isWatched')) {
-      pre.classList.remove('isWatched');
+    if (p.classList.contains('isWatched')) {
+      p.classList.remove('isWatched');
     } else {
-      pre.classList.add('isWatched');
+      p.classList.add('isWatched');
       isWatched = true;
     }
     return isWatched;
