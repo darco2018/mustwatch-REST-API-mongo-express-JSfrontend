@@ -6,8 +6,17 @@ body {
   min-width: 300px;
 }
 
+ul {
+  list-style-type: none;
+}
+
 .isWatched {
   text-decoration: line-through;
+}
+
+pre {
+  display: inline-block;
+  margin-right: 10px;
 }
 
 .deleteBtn {
@@ -24,7 +33,6 @@ body {
   opacity: 1;
 }
 
-pre {
-    display: inline-block;
-    margin-right: 10px;
-}
+
+
+

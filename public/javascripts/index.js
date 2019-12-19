@@ -8,80 +8,8 @@ window.addEventListener('DOMContentLoaded', event => {
   const apiUrl = '/api/movies/';
   const fullUrl = baseUrl + apiUrl;
 
-  movieInput.addEventListener('keydown', async function fn(e) {
-    var key = e.which || e.keyCode || 0;
-    if (key == 13) {
-      try {
-        // read data from input ....
-        const movieTitle = movieInput.value;
-        // add year & genre
-        const newMovie = { title: movieTitle };
-
-        movieInput.value = '';
-        const savedMovie = await postMovie(fullUrl, newMovie);
-        console.log(JSON.stringify(savedMovie.title)); // JSON-string from `response.json()` call
-        init();
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  });
-
-  movielist.addEventListener('click', function fn(e) {
-    //console.log(e.target.tagName);
-    let listItem = getClosest(e.target, 'li');
-    const movieId = listItem.dataset.id;
-
-    if (e.target.className === 'deleteBtn') {
-      movielist.removeChild(listItem);
-      console.log('--deleting movie from db');
-      //deleteMovie();
-    } else {
-      let pre = null;
-      if (e.target.tagName === 'LI') {       
-        pre = e.target.children[0];
-      } else {
-        pre = getClosest(e.target, 'pre');
-      }
-
-      let isWatched = false;
-      if (pre.classList.contains('isWatched')) {
-        pre.classList.remove('isWatched');
-      } else {
-        pre.classList.add('isWatched');
-        isWatched = true;
-      }
-
-      console.log('upadting movie state in DB: ' + movieId + ', ' + isWatched);
-    }
-  });
-
-  function getClosest(elem, selector) {
-    for (; elem && elem !== document; elem = elem.parentNode) {
-      if (elem.matches(selector)) return elem;
-    }
-    return null;
-  }
-
-  async function postMovie(url = '', newMovie = {}) {
-    const res = await fetch(url, {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(newMovie) // body data type must match "Content-Type" header
-    });
-
-    if (!res.ok) {
-      return handleErrors(res);
-    }
-    const movie = await res.json();
-    /* console.log('Saved: ' + movie.title);
-    console.log(movie); */
-
-    return movie; // parses JSON response into native JavaScript objects
-  }
+  /* ---------------------------------------------------------------- */
+  init();
 
   async function init() {
     try {
@@ -94,26 +22,45 @@ window.addEventListener('DOMContentLoaded', event => {
     }
   }
 
-  function showMovies(movies) {
-    movieList.innerHTML = '';
-    for (const movie of movies) {
-      const { _id, title, released, genre, rating, isWatched } = movie;
-      console.log(_id);
+  /* --------------- event listeners ---------------------------- */
 
-      let listItem = document.createElement('li');
-      listItem.innerHTML = `<pre><strong>${title}</strong> released in <span>${released}</span>, <span>${genre}</span>, <span>${rating}</span>, <span>${isWatched}</span></pre>`;
-      listItem.innerHTML += "<span class='deleteBtn'>X</span>";
-      listItem.setAttribute('data-id', _id);
-      listItem.classList.add('movieItem');
-      if (isWatched) {
-        listItem.classList.add('isWatched');
+  movieInput.addEventListener('keydown', async function fn(e) {
+    var key = e.which || e.keyCode || 0;
+    if (key == 13) {
+      try {
+        const movieTitle = movieInput.value;
+        // add year & genre
+        const newMovie = { title: movieTitle };
+        movieInput.value = '';
+        const savedMovie = await postMovie(fullUrl, newMovie);
+        init();
+      } catch (error) {
+        'There has been a problem with your fetch operation: ' + error.message
       }
-
-      movieList.appendChild(listItem);
     }
-  }
+  });
 
-  const getMovies = async (url = '') => {
+  movielist.addEventListener('click', function fn(e) {
+    let listItem = getClosest(e.target, 'LI');
+    const movieId = listItem.dataset.id;
+
+    try {
+      if (e.target.className === 'deleteBtn') {
+        movielist.removeChild(listItem);
+        deleteMovie(movieId);
+      } else {
+        const isWatched = toggleIsWatched(e);
+        updateMovie(movieId, { isWatched });
+      }
+    } catch (error) {
+      'There has been a problem with your fetch operation: ' + error.message
+    }   
+  });
+
+
+  /* ------------------------- API calls ---------------------- */
+
+  async function getMovies (url = '') {
     const res = await fetch(url, {
       method: 'GET', // default
       mode: 'cors', // default
@@ -129,7 +76,90 @@ window.addEventListener('DOMContentLoaded', event => {
     return json.movies;
   };
 
-  init();
+  async function postMovie(url = '', newMovie = {}) {
+    const res = await fetch(url, {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(newMovie) // body data type must match "Content-Type" header
+    });
+
+    if (!res.ok) {
+      return handleErrors(res);
+    }
+    const movie = await res.json();
+    return movie; // parses JSON response into native JavaScript objects
+  }
+
+  async function deleteMovie(movieId) {
+    const res = await fetch(fullUrl + movieId, {
+      method: 'DELETE'
+    });
+    if (!res.ok) {
+      return handleErrors(res);
+    }
+
+    return await res.json();
+  }
+
+  async function updateMovie(movieId, { isWatched }) {
+    const res = await fetch(fullUrl + movieId, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ isWatched })
+    });
+
+    if (!res.ok) {
+      return handleErrors(res);
+    }
+    const movie = await res.json();
+    return movie;
+  }
+
+  /* ----------------- helpers ----------------------------*/
+
+  function showMovies(movies) {
+    movieList.innerHTML = '';
+
+    for (const movie of movies) {
+      const { _id, title, released, genre, rating, isWatched } = movie;
+      let listItem = document.createElement('LI');
+      listItem.innerHTML = `<pre class=${isWatched ? "isWatched" : ""}>  <strong>${title}</strong> released in <span>${released}</span>, <span>${genre}</span>, <span>${rating}</span>, </pre>`;
+      
+      listItem.setAttribute('data-id', _id);
+      listItem.classList.add('movieItem'); 
+      listItem.innerHTML += `<span class="deleteBtn">X</span>`;
+
+      movieList.appendChild(listItem);
+    }
+  }
+
+  function toggleIsWatched(e) {
+    let pre =
+      e.target.tagName === 'LI'
+        ? e.target.children[0]
+        : getClosest(e.target, 'PRE');
+
+    let isWatched = false;
+    if (pre.classList.contains('isWatched')) {
+      pre.classList.remove('isWatched');
+    } else {
+      pre.classList.add('isWatched');
+      isWatched = true;
+    }
+    return isWatched;
+  }
+
+  function getClosest(elem, selector) {
+    for (; elem && elem !== document; elem = elem.parentNode) {
+      if (elem.matches(selector)) return elem;
+    }
+    return null;
+  }
 
   function handleErrors(res) {
     if (res.status === 404) {
