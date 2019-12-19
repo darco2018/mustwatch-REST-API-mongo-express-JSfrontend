@@ -1,117 +1,71 @@
-# JSON REST API with mongo & express
-
-CRUD movies using JSON API.
-
-### Installation
-
-```sh
-$ npm i
-$ npm run debug
-// go to  http://localhost:3000/ & http://localhost:3000/api/movies
-```
+# Single page app: vanilla JS(frontend) + JSON REST API with mongo & express(backend) 
 
 ### Created by
-
+View README.md of  https://github.com/darco2018/mustwatch-REST-API-mongo-express to see how the API part was created.
 ```sh
-$ npx express-generator
-$ npm i (to install express deps)
-$ npm nodemon, mongoose
-```
+$ git clone  https://github.com/darco2018/mustwatch-REST-API-mongo-express.git
+$ npm i
+$ mkdir views public/stylesheets public/javascripts public/images
+```  
+- create **/views/index.html**
+- ###### go to the INSTALLATION section down below & choose one-server or two-server option
 
-- **GIT**:
 
-```sh
-$ touch .gitignore (for node_modules)
-$ git init
-```
-
-- **package.json**:
-  "start": "node ./bin/www",
-  "dev": "DEBUG=test4:\* npm start",
-  "debug": "nodemon ./bin/www"
-- **remove express-generator code:**
-  1. change usersRouter code to moviesRouter in app.js & /routers
-  2. view: remove jade files from /views & package.json; change res.render("view", {data}) to res.json({"key": "value"}); start nodemon & check it's working
-  3. remove /views & /public folders - leave them if you plan to add frontend in the same project
 - **MONGO**
-- install mongo & mongo CLI on your machine
-- start mongo demon & mongo:
-
+  - install mongo & mongo CLI on your machine
+  - start mongo demon & mongo:
+  
 ```sh
 $ sudo service mongod start/status/stop
 $ mongo
 ```
-
-- uncomment dbTest.test(mongoose) in app.js & check it's working
-- Copy relevant db data from dbTest.js, eg
-
-```sh
-const dbName = 'mustwatch';
-mongoose.connect('mongodb://localhost:27017/' + dbName, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
-mongoose.set("debug", true);
-const conn = mongoose.connection;
-conn.on("open", ()=> console.log("------ Connected to db " + dbName))
-    .catch(err => console.log(err))
-mongoose.Promise = Promise // if you want to use promises
-```
-
-- create Movie schema, compile it & export
-
-```sh
-const movieSchema = new Schema({
-  name: "Star Wars",
-  ...
-});
-module.exports = mongoose.model('Movie', movieSchema);
-```
-
-- use the schema in router & controller
-
-```sh
-// router
-router.get('/', getMovies);
-// controller
-const getMovies= async (req, res) => {
-  try {
-    let movies = null;
-    movies = await Movie.find(); //returns full-fledged Promise in mongoose
-    res.send({ movies: movies });
-  } catch (err) {    console.log(err);
- }
-
- // some other useful code snippets:
- let ring = new Movie({title: "Ring"});
-   ring.save()
-  .then(movie => console.log(movie))
-  .catch(e=>console.log(e));
-
-Movie.create({ title: 'Jelly Bean' }, { title: 'Snickers' }, function (err, jellybean, snickers) {
-  if (err) res.json(err)
-  // do stuff on the saved jellybean & snickers
-});
-```
-
-### CRUD with Postman & Mongo CLI
-
-- You can CRUD with movies using the file movies.postman_collection.json in Postman
-  or in
-- mongo CLI. Most useful mongo CLI commands:
-  - show dbs/collections
-  - use mustwatch (creates db & switches to it)
-  - db.movies.insertOne({"title": "Star Wars"}) .insertMany([ obj, obj, obj ])
-  - db.movies.find().limit(n)/sort({"title" : 1})/count()/distinct()/pretty()
-  - db.dropDatabase() (drops the db you're currenty using)
-  - db.movies.remove({})
-  - db (where am I?)
-  - help, db.help() (on db methods) db.collection.help() (on collection methods)
+ - uncomment dbTest.test(mongoose) in app.js & check it's working
 
 ### Time saving tips
+   - when fetching all the movies, note that what is returned from res.json() is not an array but **{**movies: Array(1)**}**. To get the movies you have to **res.json().movies**
+   - nodemon restarts the server on changes but **doesn't** refresh the page in browser
+   - 
 
-- when in mongo CLI name your collection in plural (movie**s**) - that's how mongoose maps a schema to a collection
-- res.json({"key": "value"}) really requires **json** object as argument
-- in Postman when using POST/PUT set option sin the view to **body raw JSON(application/json)**
+### Installation
 
+###### You can run frontend & backend on one server or on two servers. The benefit of using the latter option is **`HOT RELOAD`**.
+&NewLine;
+##### Single server, single port.
+###### Just Nodemon with the fronend & the backend at 3000.
+&NewLine;
+```sh
+$ npm i
+$ npm run debug
+// go to  http://localhost:3000/ & http://localhost:3000/api/movies
+$ sudo kill -9 $(sudo lsof -t -i:3000) // will stop the server
+```
+1. For the css & js links in your **index.html** use **relative paths to /public** folder, eg 
+<link rel="stylesheet" href="stylesheets/styles.css" >
+<script src="javascripts/index.js"></script>
+2. In **app.js**:
+app.use(express.static(path.join(__dirname + '/views'))); 
+app.use(express.static(path.join(__dirname, '/public')));
+3. in the **index route** change
+res.send to res.sendFile('index.html');
 
+#####  Two servers, two ports:
+###### Nodemon will take care of the backend at 3000. Live Server will deal with frontend at 5500.
+&NewLine;
+1. Backend the same as above but add the following line to **package.json**:
+"`norestart`": "nodemon ./bin/www --ignore '/*' " - it will prevent useless backend server reloads (You want to work on the fronend, don't you?!)
+&NewLine;
+```sh
+$ npm i 
+$ npm run norestart
+// go to  http://localhost:3000/ & http://localhost:3000/api/movies
+$ sudo kill -9 $(sudo lsof -t -i:3000) // will stop the server
+```
+2. For frontend install **LIVE SERVER in Visual Studio Code** & run it. 
+Your &nbsp; /views/index.html will be displayed at http://localhost:5500/views/. 
+3. For the css & js links in your **index.html** use **absolute paths**, eg 
+<link rel="stylesheet" href="/public/stylesheets/styles.css" >
+<script src="/public/javascripts/index.js"></script>
+
+2. In **app.js**:
+// app.use(express.static(path.join(__dirname + '/views'))); 
+// app.use(express.static(path.join(__dirname, '/public')));
