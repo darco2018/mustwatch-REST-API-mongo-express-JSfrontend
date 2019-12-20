@@ -2,7 +2,6 @@
 
 body {
   font-family: 'Montserrat', sans-serif;
-  /* background: #ecf0f1; */
   background: url('../images/movie.jpg');
 }
 
@@ -62,7 +61,7 @@ li {
 }
 
 li:hover {
-  background:rgb(53, 6, 6);
+  background: rgb(53, 6, 6);
   cursor: pointer;
 }
 
@@ -91,9 +90,3 @@ li:hover {
   cursor: pointer;
   opacity: 1;
 }
-
-/* .isWatched {
-  text-decoration: line-through;
-} */
-
-/*****************************WATCHED STYLES*****************************/
